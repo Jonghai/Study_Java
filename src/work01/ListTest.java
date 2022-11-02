@@ -1,3 +1,5 @@
+package work01;
+
 import java.util.*;
 
 public class ListTest {
