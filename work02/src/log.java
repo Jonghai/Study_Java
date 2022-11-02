@@ -8,7 +8,6 @@ public class log {
     static String path = "C:\\Users\\CLIPSOFT\\Documents\\logFiles"; //검색할 파일
 
     public static void main(String[] args ) throws FileNotFoundException {
-        log.file(path);
 
     }
 
