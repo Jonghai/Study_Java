@@ -19,24 +19,24 @@ public class LogSearchClass {
     }
 
     //파일경로 입력 메소드
-    public File setFilepath() {
+    public File getFilepath() {
         File file = new File(filepath);
         return file;
     }
 
     //검색어 입력 메소드
-    public String[] setKeyword(){
+    public String[] getKeyword(){
         String[] words = word.split(",");
         return words;
     }
 
     //라인별 검색 진행 메소드
     public List<String> find() throws IOException {
-        String[] keywords = setKeyword();
+        String[] keywords = getKeyword();
         String line = "";
         List<String> fileList = new ArrayList<>();
         BufferedReader br = null;
-        br = new BufferedReader(new FileReader(setFilepath()));
+        br = new BufferedReader(new FileReader(getFilepath()));
         while ((line = br.readLine()) != null){
             for(int j=0, n = keywords.length; j<n; j++){
                 String keyword = keywords[j];
