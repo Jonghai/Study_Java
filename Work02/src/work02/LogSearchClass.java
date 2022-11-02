@@ -5,17 +5,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LogSearchClass {
-    public String filepath;
-    public String word;
-    public boolean isAnd = false;
+    private String filepath;
+    private String word;
+    private boolean isAnd = false;
 
-    public static void main(String[] args) throws IOException {
-        LogSearchClass logClass = new LogSearchClass();
-        logClass.filepath = "C:\\Users\\CLIPSOFT\\Documents\\logFiles\\beom-developer.api.2022-10-14_0.log"; //파일경로
-        logClass.word ="HTML,DOC"; // ,를 기준으로 단어 검색
-        logClass.isAnd = false; //true는 and , false는 or
+    public void setFilepath(String filepath) {
+        this.filepath = filepath;
+    }
 
-        System.out.println(logClass.find());
+    public void setAnd(boolean enable) {
+        isAnd = enable;
+    }
+
+    public void setKeyword(String word) {
+        this.word = word;
+    }
+
+    public void setKeyword(String... word) {
+        for(String s : word) {
+            this.word += "," + s;
+        }
     }
 
     //파일경로 입력 메소드
@@ -37,25 +46,28 @@ public class LogSearchClass {
         List<String> fileList = new ArrayList<>();
         BufferedReader br = null;
         br = new BufferedReader(new FileReader(getFilepath()));
-        while ((line = br.readLine()) != null){
-            for(int j=0, n = keywords.length; j<n; j++){
-                String keyword = keywords[j];
-                if(isAnd){
-                    if(!line.contains(keyword)){
-                        break;
-                    }
-                    if(j == n-1){
-                        fileList.add(line + "\n");
-                    }
-                }else{
-                    if(line.contains(keyword)) {
-                        fileList.add(line + "\n");
-                        break;
+        try {
+            while ((line = br.readLine()) != null) {
+                for (int j = 0, n = keywords.length; j < n; j++) {
+                    String keyword = keywords[j];
+                    if (isAnd) {
+                        if (!line.contains(keyword)) {
+                            break;
+                        }
+                        if (j == n - 1) {
+                            fileList.add(line + "\n");
+                        }
+                    } else {
+                        if (line.contains(keyword)) {
+                            fileList.add(line + "\n");
+                            break;
+                        }
                     }
                 }
             }
+        } finally {
+            br.close();
         }
-        br.close();
         return fileList;
     }
 
