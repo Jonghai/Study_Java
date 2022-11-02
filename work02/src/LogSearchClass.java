@@ -18,7 +18,6 @@ public class LogSearchClass {
 
     //파일경로 입력 메소드
     public File setFilepath() {
-        //LogSearchClass logClass = new LogSearchClass();
         File file = new File(filepath);
         return file;
     }
@@ -28,6 +27,7 @@ public class LogSearchClass {
         String[] words = word.split(",");
         return words;
     }
+
     //라인별 검색 진행 메소드
     public List<String> find() throws IOException {
         String[] keywords = setKeyword();
