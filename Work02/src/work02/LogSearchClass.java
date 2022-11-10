@@ -5,29 +5,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LogSearchClass {
-    public String filepath;
-    public String word;
-    public boolean isAnd = false;
+    private String filepath;
+    private String word;
+    private boolean isAnd;
 
     public static void main(String[] args) throws IOException {
         LogSearchClass logClass = new LogSearchClass();
-        logClass.filepath = "C:\\Users\\CLIPSOFT\\Documents\\logFiles\\beom-developer.api.2022-10-14_0.log"; //파일경로
-        logClass.word ="HTML,DOC"; // ,를 기준으로 단어 검색
-        logClass.isAnd = false; //true는 and , false는 or
+        logClass.setFilepath("C:\\Users\\CLIPSOFT\\Documents\\logFiles\\beom-developer.api.2022-10-14_0.log");//파일경로
+        logClass.setKeyword("HTML,DOC");// ,를 기준으로 단어 검색
+        logClass.setAnd(false); //true는 and , false는 or
 
         System.out.println(logClass.find());
     }
 
-    //파일경로 입력 메소드
     public File getFilepath() {
         File file = new File(filepath);
         return file;
     }
+    //파일경로 입력 메소드
+    public void setFilepath(String filepath) {
+        this.filepath = filepath;
+    }
 
-    //검색어 입력 메소드
-    public String[] getKeyword(){
+    public String[] getKeyword() {
         String[] words = word.split(",");
         return words;
+    }
+    //검색어 입력 메소드
+    public void setKeyword(String word){
+        this.word = word;
+    }
+
+    public boolean isAnd() {
+        return isAnd;
+    }
+    public void setAnd(boolean isAnd) {
+        this.isAnd = isAnd;
     }
 
     //라인별 검색 진행 메소드
@@ -40,7 +53,7 @@ public class LogSearchClass {
         while ((line = br.readLine()) != null){
             for(int j=0, n = keywords.length; j<n; j++){
                 String keyword = keywords[j];
-                if(isAnd){
+                if(isAnd()){
                     if(!line.contains(keyword)){
                         break;
                     }
@@ -58,7 +71,4 @@ public class LogSearchClass {
         br.close();
         return fileList;
     }
-
-
-
 }
