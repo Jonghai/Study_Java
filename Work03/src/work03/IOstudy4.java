@@ -29,14 +29,11 @@ class FileInfo{
         }
         //System.out.println(array.opt(3));
         return array;
-
     }
-
 }
-
 public class IOstudy4 {
      String path = "C:\\testfolder\\";
-     String fileNm = "mergeFile.txt";
+     String fileNm = "mergeFile.gtrd";
 
     public File[] files() {
         File folder = new File(path);
@@ -44,39 +41,48 @@ public class IOstudy4 {
         return fileList;
     }
 
+    public void unmergeFile(File gtrd, File directory) throws IOException {
+       // if(!directory.exists()) directory.mkdirs();
+        FileInputStream fis = new FileInputStream(gtrd);
+        int oneByteData = -1;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        while((oneByteData = fis.read(fis, 0, 1)) > 0) {
+            if ((byte) oneByteData == '\n') break;
+            baos.write((byte) oneByteData);
+        }
+        System.out.println(baos);
+        String metaDataJson = baos.toString();
+        JSONObject metaData = new JSONObject(metaDataJson);
+        String FileName = metaData.optString("fileName");
+        long FileLength = metaData.optLong("fileLength");
+        //System.out.println(FileName);
+        BufferedWriter testfiles = new BufferedWriter(new FileWriter("C:\\mergefolder\\"+FileName));
+        //testfiles.write(fis,0,);
+        //testfiles.close();
+    }
+
     public void mergefile(){
-        BufferedReader fis = null;
+        FileInputStream fis = null;
         BufferedOutputStream fos = null;
         try {
             FileInfo fileinfo = new FileInfo();
             File mergeFile = new File("C:\\mergefolder\\" + fileNm);
             byte[] buffer = null;
-            String line = "";
             fos = new BufferedOutputStream(new FileOutputStream(mergeFile));
             JSONArray json = new JSONArray(fileinfo.setFile());
             int i = 0;
             for(File file : files()){
                 JSONObject object = json.optJSONObject(i);
                 i++;
-                //object.toString();
-                byte[] ByteArray = object.toString().getBytes("UTF-8");
-                System.out.println(ByteArray);
-                String bytestring = new String(ByteArray);
-                System.out.println(bytestring);
+                fos.write(((object)+"\n").getBytes());
 
-                //BigInteger n = new BigInteger(new String(ByteArray, "UTF-8"));
-                //byte[] bytes = ByteBuffer.allocate(4).putInt(ByteArray).array();
-               /* String fileName = object.optString("fileName");
-                Long fileLength = object.optLong("fileLength");
-                fos.write(((fileName+fileLength)+"\n").getBytes());*/
-
+                buffer = new byte[4096];
+                int readCount = 0;
                 if(file.exists() && file.isFile()){
-                    fis = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-                }
-                while ((line = fis.readLine()) != null){
-                    buffer = line.getBytes();
-                    fos.write(buffer);
-                    fos.write(System.lineSeparator().getBytes());
+                    fis = new FileInputStream(file);
+                    while ((readCount = fis.read(buffer, 0, buffer.length)) > 0){//read() = 파일끝에 도달하면 -1을 반환/그러니 0보다 작아질때까지 반복
+                       fos.write(buffer, 0, readCount);
+                    }
                 }
             }
             System.out.println("파일병합완료");
@@ -108,7 +114,7 @@ public class IOstudy4 {
         IOstudy4 io = new IOstudy4();
         //FileInfo fileInfo = new FileInfo();
         //fileInfo.setFile();
-        io.mergefile();
-        //io.restorefile();
+        //io.mergefile();
+        io.unmergeFile(new File("C:\\mergefolder\\mergeFile.gtrd"), null);
     }
 }
