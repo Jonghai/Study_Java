@@ -20,7 +20,7 @@ public class FileInStream {
             output = new BufferedOutputStream(new FileOutputStream(targetFile));
             for (File file : fileList) {
                 if (file.exists() && file.isFile()) {
-                    if (file.toString().toUpperCase().endsWith(".DAT")) {
+                    if (file.toString().toUpperCase().endsWith(".txt")) {
                         System.out.println("fileNm : ".concat(file.toString().toUpperCase()));
 
                         while ((line = input.readLine()) != null) {
