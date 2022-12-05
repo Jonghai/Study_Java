@@ -99,7 +99,7 @@ public class IOstudy4 {
                     }
                 }
             }
-            System.out.println("파일병합완료");
+            //System.out.println("파일병합완료");
         }catch (Exception e){
             e.printStackTrace();
         }finally {
