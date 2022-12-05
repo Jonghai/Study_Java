@@ -3,13 +3,54 @@ package work03;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.UUID;
+import java.util.regex.Pattern;
+
+
+class ObjectTest {
+    String strValue = UUID.randomUUID().toString();
+    int intValue = (int)Math.random();
+
+    ArrayList<String> list = new ArrayList<>();
+
+    ObjectTest() {
+        for(int i = 0; i < 10; ++i) {
+            list.add(i + "");
+        }
+    }
+
+    public JSONObject toJSON() {
+        JSONObject jsonObject = new JSONObject().put("strValue",strValue).put("intValue", intValue);
+        JSONArray jsonArray = new JSONArray();
+        for(String str : list) {
+            jsonArray.put(str);
+        }
+        jsonObject.put("list", jsonArray);
+        return jsonObject;
+    }
+
+    public static ObjectTest fromJSON(JSONObject jsonObject) {
+        ObjectTest test = new ObjectTest();
+        test.list.clear();
+        test.intValue = jsonObject.optInt("intValue");
+        test.strValue = jsonObject.optString("strValue");
+        JSONArray jsonArray = jsonObject.optJSONArray("list");
+        for(int i = 0, n = jsonArray.length(); i < n; ++i) {
+            String value = jsonArray.getString(i);
+            test.list.add(value);
+        }
+        return test;
+    }
+
+}
 
 //File 이름, 크기 정보 클래스
 class FileInfo{
     private String fileName;
     private  long fileLength;
 
-    //파일 정보 JSONArray에 담는 메소드
+    //파일 정보 JSONArray에 담는 메서드
     public JSONArray setFile(){
         IOstudy4 io = new IOstudy4();
         JSONArray array = new JSONArray();
@@ -26,9 +67,6 @@ class FileInfo{
     }
 }
 public class IOstudy4 {
-
-    private String mergefolderpath = "Work03/mergefolder/";
-
     //테스트 파일 리스트
     public File[] files() {
         String path = "Work03/testfolder/";
@@ -38,7 +76,7 @@ public class IOstudy4 {
     }
 
     //어떤 디렉토리 경로를 입력 받아서 그 내부에 있는 모든 파일을 하나로 합쳐서 단 하나의 파일로 만드는 메서드.
-    public void mergefile(File gtrd, File mergefolder){
+    public void mergefile(String gtrd, File mergefolder){
         if(!mergefolder.exists())mergefolder.mkdirs();
         FileInputStream fis = null;
         BufferedOutputStream fos = null;
@@ -65,17 +103,16 @@ public class IOstudy4 {
         }catch (Exception e){
             e.printStackTrace();
         }finally {
-            try {
-                if(fis !=null)fis.close();
-                if(fos !=null)fos.close();
-            }catch (Exception e){}
+            SafeClose.execute(fis);
+            SafeClose.execute(fos);
         }
     }
 
     //위에 메서드와 반대로 하나로 합쳐진 파일을 다시 풀어서 각각의 원본 파일로 복구하는 메서드
-    public void unmergeFile(File gtrd) throws IOException {
-        FileInfo fileInfo = new FileInfo();
+    public void unmergeFile(File gtrd, File unmergefolder) throws IOException {
+        if(!unmergefolder.exists())unmergefolder.mkdirs();
         //else throw new IOException("대상경로가 디렉토리가 아닌 파일입니다.");
+        FileInfo fileInfo = new FileInfo();
         FileInputStream fis = new FileInputStream(gtrd);
         FileOutputStream fos = null;
         byte[] buffer = null;
@@ -90,7 +127,7 @@ public class IOstudy4 {
                 JSONObject object = metaData.optJSONObject(i);
                 String fileName = object.optString("fileName");
                 long fileLength = object.optLong("fileLength");
-                File testFile = new File(mergefolderpath + fileName);
+                File testFile = new File("Work03/unmergefolder/" + fileName);
                 testFile.delete();
                 fos = new FileOutputStream(testFile);
                 buffer = new byte[4096];
@@ -108,18 +145,31 @@ public class IOstudy4 {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (fis != null) fis.close();
-                if (fos != null) fos.close();
-            } catch (Exception e) {}
+            SafeClose.execute(fis);
+            SafeClose.execute(fos);
         }
     }
 
     public static void main(String[] args) throws IOException {
+
+        String data = new ObjectTest().toJSON().toString();
+        System.out.println(data);
+
+        ObjectTest parsedData = ObjectTest.fromJSON(new JSONObject(data));
+        System.out.println(parsedData.toJSON());
+
+
+
+
+        if(1 < 2) return;
+
         IOstudy4 io = new IOstudy4();
-        File mergefile = new File(io.mergefolderpath+"mergeFile.gtrd");
-        //io.mergefile(mergefile,new File(io.mergefolderpath));
-        io.unmergeFile(mergefile);
+        //합칠파일 or 복구할 파일
+        String gtrd = "Work03/mergefolder/mergeFile.gtrd";
+        //합칠 파일/합칠 폴더경로
+        io.mergefile(gtrd, new File("Work03/mergefolder/"));
+        //복구할 파일/ 복구할 폴더경로
+        io.unmergeFile(new File (gtrd), new File("Work03/unmergefolder/"));
 
     }
 }
