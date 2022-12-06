@@ -8,7 +8,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 
-class ObjectTest {
+/*class ObjectTest {
     String strValue = UUID.randomUUID().toString();
     int intValue = (int)Math.random();
 
@@ -43,7 +43,7 @@ class ObjectTest {
         return test;
     }
 
-}
+}*/
 
 //File 이름, 크기 정보 클래스
 class FileInfo{
@@ -152,16 +152,13 @@ public class IOstudy4 {
 
     public static void main(String[] args) throws IOException {
 
-        String data = new ObjectTest().toJSON().toString();
+       /* String data = new ObjectTest().toJSON().toString();
         System.out.println(data);
 
         ObjectTest parsedData = ObjectTest.fromJSON(new JSONObject(data));
         System.out.println(parsedData.toJSON());
 
-
-
-
-        if(1 < 2) return;
+        if(1 < 2) return;*/
 
         IOstudy4 io = new IOstudy4();
         //합칠파일 or 복구할 파일
