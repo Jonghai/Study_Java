@@ -45,12 +45,17 @@ import java.util.regex.Pattern;
 
 }*/
 
-//File 이름, 크기 정보 클래스
-class FileInfo{
+public class IOstudy4 {
     private String fileName;
     private  long fileLength;
-
-    //파일 정보 JSONArray에 담는 메서드
+    //테스트 파일 리스트
+    public File[] files() {
+        String path = "Work03/testfolder/";
+        File folder = new File(path);
+        File[] fileList = folder.listFiles();
+        return fileList;
+    }
+    //파일 정보(이름, 크기) JSONArray에 담는 메서드
     public JSONArray setFile(){
         IOstudy4 io = new IOstudy4();
         JSONArray array = new JSONArray();
@@ -65,26 +70,18 @@ class FileInfo{
         }
         return array;
     }
-}
-public class IOstudy4 {
-    //테스트 파일 리스트
-    public File[] files() {
-        String path = "Work03/testfolder/";
-        File folder = new File(path);
-        File[] fileList = folder.listFiles();
-        return fileList;
-    }
+
 
     //어떤 디렉토리 경로를 입력 받아서 그 내부에 있는 모든 파일을 하나로 합쳐서 단 하나의 파일로 만드는 메서드.
     public void mergefile(String gtrd, File mergefolder){
+        IOstudy4 io4 = new IOstudy4();
         if(!mergefolder.exists())mergefolder.mkdirs();
         FileInputStream fis = null;
         BufferedOutputStream fos = null;
         try {
-            FileInfo fileinfo = new FileInfo();
             // byte[] buffer = null;
             fos = new BufferedOutputStream(new FileOutputStream(gtrd));
-            JSONArray json = new JSONArray(fileinfo.setFile());
+            JSONArray json = new JSONArray(io4.setFile());
             int i = 0;
             for(File file : files()){
                 JSONObject object = json.optJSONObject(i);
@@ -110,15 +107,15 @@ public class IOstudy4 {
 
     //위에 메서드와 반대로 하나로 합쳐진 파일을 다시 풀어서 각각의 원본 파일로 복구하는 메서드
     public void unmergeFile(File gtrd, File unmergefolder) throws IOException {
+        IOstudy4 io4 = new IOstudy4();
         if(!unmergefolder.exists())unmergefolder.mkdirs();
         //else throw new IOException("대상경로가 디렉토리가 아닌 파일입니다.");
-        FileInfo fileInfo = new FileInfo();
         FileInputStream fis = new FileInputStream(gtrd);
         FileOutputStream fos = null;
         byte[] buffer = null;
         int oneByteData = -1;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        JSONArray metaData = new JSONArray(fileInfo.setFile());
+        JSONArray metaData = new JSONArray(io4.setFile());
         try {
             for (int i = 0; i < metaData.length(); i++) {
                 while ((oneByteData = fis.read()) > 0) {
@@ -160,13 +157,13 @@ public class IOstudy4 {
 
         if(1 < 2) return;*/
 
-        IOstudy4 io = new IOstudy4();
+        IOstudy4 io4 = new IOstudy4();
         //합칠파일 or 복구할 파일
         String gtrd = "Work03/mergefolder/mergeFile.gtrd";
         //합칠 파일/합칠 폴더경로
-        io.mergefile(gtrd, new File("Work03/mergefolder/"));
+        //io4.mergefile(gtrd, new File("Work03/mergefolder/"));
         //복구할 파일/ 복구할 폴더경로
-        io.unmergeFile(new File (gtrd), new File("Work03/unmergefolder/"));
+        io4.unmergeFile(new File (gtrd), new File("Work03/unmergefolder/"));
 
     }
 }
